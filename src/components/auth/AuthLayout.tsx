@@ -13,9 +13,11 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children, title, description }: AuthLayoutProps) {
   const [currentYear, setCurrentYear] = useState<number | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
+    setIsClient(true); // Indicate that the component has mounted on the client
   }, []);
 
   return (
@@ -33,9 +35,9 @@ export default function AuthLayout({ children, title, description }: AuthLayoutP
         </CardContent>
       </Card>
        <p className="mt-8 text-center text-sm text-muted-foreground">
-        {currentYear && `© ${currentYear} Hostel Management System. All rights reserved.`}
-        {!currentYear && `© Hostel Management System. All rights reserved.`}
+        {isClient && currentYear ? `© ${currentYear} Hostel Management System. All rights reserved.` : `© Hostel Management System. All rights reserved.`}
       </p>
     </div>
   );
 }
+
