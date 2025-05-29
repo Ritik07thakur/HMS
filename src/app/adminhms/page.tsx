@@ -1,14 +1,9 @@
 
-import AuthLayout from "@/components/auth/AuthLayout";
-import { AdminLoginForm } from "@/components/auth/AdminLoginForm";
+import { redirect } from 'next/navigation';
 
-export default function AdminHmsLoginPage() {
-  return (
-    <AuthLayout
-      title="Admin Login"
-      description="Access the Hostel Management System admin panel."
-    >
-      <AdminLoginForm />
-    </AuthLayout>
-  );
+export default function AdminHmsRedirectPage() {
+  redirect('/admin/dashboard');
+  // This return is technically unreachable due to the redirect,
+  // but Next.js/React might require a component to return JSX.
+  return null;
 }
