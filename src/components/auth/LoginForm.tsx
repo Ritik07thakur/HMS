@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,7 +52,7 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" suppressHydrationWarning>
         <FormField
           control={form.control}
           name="email"
@@ -61,7 +62,7 @@ export function LoginForm() {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input placeholder="m@example.com" {...field} className="pl-10" />
+                  <Input type="email" placeholder="m@example.com" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
@@ -77,14 +78,14 @@ export function LoginForm() {
                <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} className="pl-10" />
+                  <Input type="password" placeholder="••••••••" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" suppressHydrationWarning>
           Login
         </Button>
         <p className="text-center text-sm text-muted-foreground">
