@@ -83,9 +83,9 @@ export function RegisterForm() {
       if (result.success) {
         toast({
           title: "Registration Successful",
-          description: result.message || "Welcome! Redirecting to your dashboard...",
+          description: result.message || "Welcome! Redirecting to login page...",
         });
-        router.push("/student/dashboard");
+        router.push("/login"); // Changed redirect to /login
       } else {
         toast({
           title: "Registration Failed",
@@ -209,7 +209,7 @@ export function RegisterForm() {
               <FormLabel>Gender</FormLabel>
               <div className="relative">
                  <UsersRound className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} defaultValue={field.value} >
                   <FormControl>
                     <SelectTrigger className="pl-10" suppressHydrationWarning>
                       <SelectValue placeholder="Select your gender" />
