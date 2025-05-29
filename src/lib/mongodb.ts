@@ -1,6 +1,6 @@
 
 'use server';
-import mongoose, { type Mongoose as MongooseInstanceType } from 'mongoose'; // Renamed Mongoose to MongooseInstanceType
+import mongoose, { type Mongoose as MongooseInstanceType, Types } from 'mongoose'; // Renamed Mongoose to MongooseInstanceType
 import type { RegisterFormValues } from '@/components/auth/RegisterForm'; // Assuming this type definition path
 
 // IMPORTANT: In a real application, use environment variables for the MongoDB URI.
@@ -75,6 +75,7 @@ export default dbConnect;
 // Note: RegisterFormValues includes confirmPassword which is not stored.
 // We'll define the schema for what's actually stored.
 export interface IUser extends Omit<RegisterFormValues, 'confirmPassword'> {
+  _id?: Types.ObjectId; // Mongoose adds _id by default
   createdAt?: Date;
   // If you add other Mongoose specific fields like _id, they are handled automatically
 }
@@ -94,3 +95,25 @@ const userSchema = new mongoose.Schema<IUser>({
 
 // To prevent model recompilation in development with HMR (Hot Module Replacement)
 export const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
+
+// Define Attendance Schema
+export type AttendanceStatus = 'Present' | 'Absent' | 'Leave';
+
+export interface IAttendance extends mongoose.Document {
+  studentId: Types.ObjectId;
+  date: Date;
+  status: AttendanceStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const attendanceSchema = new mongoose.Schema<IAttendance>({
+  studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  date: { type: Date, required: true },
+  status: { type: String, enum: ['Present', 'Absent', 'Leave'], required: true },
+}, { timestamps: true });
+
+// Add compound index to prevent duplicate entries for the same student on the same day
+attendanceSchema.index({ studentId: 1, date: 1 }, { unique: true });
+
+export const Attendance = mongoose.models.Attendance || mongoose.model<IAttendance>('Attendance', attendanceSchema);
