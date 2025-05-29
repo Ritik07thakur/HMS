@@ -9,6 +9,7 @@ export interface StudentBasicInfo {
   _id: string;
   fullName: string;
   email: string; 
+  createdAt?: Date; // Added createdAt
 }
 
 export async function getTotalStudentsCount(): Promise<number> {
@@ -23,24 +24,28 @@ export async function getTotalStudentsCount(): Promise<number> {
   }
 }
 
-export async function getAllStudentsForDashboard(limit: number = 10): Promise<StudentBasicInfo[]> {
+export async function getAllStudentsForDashboard(limit?: number): Promise<StudentBasicInfo[]> {
   try {
     await dbConnect();
-    // Fetch only necessary fields, and limit the results for dashboard display
-    const students = await User.find({})
-      .select('_id fullName email') // Select only _id, fullName, and email
-      .limit(limit)
-      .sort({ createdAt: -1 }) // Optional: get the latest registered students
-      .lean(); // .lean() for plain JS objects for better performance
+    // Fetch necessary fields, and limit the results if a limit is provided
+    const query = User.find({})
+      .select('_id fullName email createdAt') // Added createdAt
+      .sort({ createdAt: -1 });
+
+    if (limit && limit > 0) {
+      query.limit(limit);
+    }
+    
+    const students = await query.lean(); // .lean() for plain JS objects for better performance
 
     return students.map(student => ({
       _id: student._id.toString(),
       fullName: student.fullName || 'N/A', // Handle cases where fullName might be missing
       email: student.email || 'N/A',   // Handle cases where email might be missing
+      createdAt: student.createdAt, // Pass createdAt
     }));
   } catch (error) {
     console.error('Error fetching students for dashboard:', error);
     return []; // Return empty array in case of an error
   }
 }
-

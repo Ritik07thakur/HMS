@@ -9,15 +9,16 @@ import { getTotalStudentsCount, getAllStudentsForDashboard } from "@/actions/adm
 
 export default async function AdminDashboardPage() {
   const totalStudents = await getTotalStudentsCount();
-  const studentsList = await getAllStudentsForDashboard(5); // Fetch top 5 students for tables
+  // Fetch a limited number of students for the dashboard previews
+  const studentsListForDashboard = await getAllStudentsForDashboard(5); 
 
-  // Mock data generation for attendance and payment based on fetched students
-  const attendanceData = studentsList.map(student => ({
+  // Mock data generation for attendance and payment based on fetched students for dashboard preview
+  const attendanceData = studentsListForDashboard.map(student => ({
     ...student,
     status: Math.random() > 0.6 ? "Present" : "Absent", // 60% present
   }));
 
-  const paymentData = studentsList.map(student => ({
+  const paymentData = studentsListForDashboard.map(student => ({
     ...student,
     status: Math.random() > 0.7 ? "Paid" : "Unpaid", // 70% paid
   }));
@@ -32,7 +33,13 @@ export default async function AdminDashboardPage() {
       </div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Total Students" value={totalStudents} IconComponent={Users} description="Registered users" />
+        <StatCard 
+          title="Total Students" 
+          value={totalStudents} 
+          IconComponent={Users} 
+          description="Registered users" 
+          href="/admin/dashboard/students" // Added href to make it clickable
+        />
         <StatCard title="Total Rooms" value="120" IconComponent={BedDouble} description="Mocked: +5 since last month" />
         <StatCard title="Attendance Today" value="92%" IconComponent={ListChecks} description="Mocked: 216 present" />
         <StatCard title="Fees Due (This Month)" value="$4,250" IconComponent={DollarSign} description="Mocked data" />
@@ -51,7 +58,7 @@ export default async function AdminDashboardPage() {
             <CardDescription>Snapshot of recent student attendance (mock data).</CardDescription>
           </CardHeader>
           <CardContent>
-            {studentsList.length > 0 ? (
+            {studentsListForDashboard.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -92,7 +99,7 @@ export default async function AdminDashboardPage() {
             <CardDescription>Snapshot of recent student bill payments (mock data).</CardDescription>
           </CardHeader>
           <CardContent>
-             {studentsList.length > 0 ? (
+             {studentsListForDashboard.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -126,4 +133,3 @@ export default async function AdminDashboardPage() {
     </div>
   );
 }
-

@@ -1,30 +1,62 @@
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Users } from "lucide-react";
-import Image from "next/image";
 
-export default function AdminStudentsPage() {
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getAllStudentsForDashboard } from "@/actions/admin";
+import { Users } from "lucide-react";
+import { format } from 'date-fns';
+
+export default async function AdminAllStudentsPage() {
+  const allStudents = await getAllStudentsForDashboard(); // No limit, fetches all
+
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight text-foreground">Student Management</h2>
+        <h2 className="text-3xl font-bold tracking-tight text-foreground">All Registered Students</h2>
         <p className="text-muted-foreground">
-          Manage student profiles, records, and details.
+          A complete list of all students registered in the system.
         </p>
       </div>
-       <Card>
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5 text-primary" />
-            Student Database
+            Student List
           </CardTitle>
           <CardDescription>
-            Access and manage all student information in one place.
+            Displaying {allStudents.length} student(s).
           </CardDescription>
         </CardHeader>
-        <CardContent className="min-h-[400px] flex flex-col items-center justify-center bg-muted/30 rounded-md">
-          <Image src="https://placehold.co/600x300.png" alt="Student Management Placeholder" width={600} height={300} data-ai-hint="database user profiles" className="rounded-lg opacity-70" />
-          <p className="mt-6 text-lg text-muted-foreground">Student management module is under construction.</p>
-          <p className="text-sm text-muted-foreground">Features for viewing, editing, and adding student profiles are coming soon.</p>
+        <CardContent>
+          {allStudents.length > 0 ? (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Full Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead className="min-w-[150px]">Registered On</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {allStudents.map((student) => (
+                    <TableRow key={student._id}>
+                      <TableCell className="font-medium">{student.fullName}</TableCell>
+                      <TableCell>{student.email}</TableCell>
+                      <TableCell>
+                        {student.createdAt ? format(new Date(student.createdAt), "PPP, p") : 'N/A'}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <div className="min-h-[300px] flex flex-col items-center justify-center bg-muted/30 rounded-md p-8 text-center">
+              <Users className="h-16 w-16 text-muted-foreground mb-6" />
+              <p className="text-xl font-semibold text-foreground mb-2">No Students Found</p>
+              <p className="text-muted-foreground">There are currently no students registered in the system.</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
