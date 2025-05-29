@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect, useMemo } from "react";
+
 
 function getStatusVariant(status: PopulatedComplaint['status']): "default" | "secondary" | "destructive" | "outline" {
   switch (status) {
@@ -20,9 +20,9 @@ function getStatusVariant(status: PopulatedComplaint['status']): "default" | "se
 // Client Component for handling search and display
 function ComplaintsClientView({ initialComplaints }: { initialComplaints: PopulatedComplaint[] }) {
   "use client";
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = React.useState(""); // Explicitly use React.useState
 
-  const complaintsToDisplay = useMemo(() => {
+  const complaintsToDisplay = React.useMemo(() => { // Explicitly use React.useMemo
     if (!searchTerm) {
       return initialComplaints;
     }

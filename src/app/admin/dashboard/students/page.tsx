@@ -5,19 +5,18 @@ import { format } from 'date-fns';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect, useMemo } from "react"; // Added useMemo
 
 // Client Component to handle search and display
 function StudentsClientView({ initialStudents }: { initialStudents: StudentBasicInfo[] }) {
   "use client";
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredStudents, setFilteredStudents] = useState<StudentBasicInfo[]>(initialStudents);
+  const [searchTerm, setSearchTerm] = React.useState(""); // Explicitly use React.useState
+  const [filteredStudents, setFilteredStudents] = React.useState<StudentBasicInfo[]>(initialStudents); // Explicitly use React.useState
 
-  useEffect(() => {
+  React.useEffect(() => { // Explicitly use React.useEffect
     setFilteredStudents(initialStudents);
   }, [initialStudents]);
 
-  const studentsToDisplay = useMemo(() => {
+  const studentsToDisplay = React.useMemo(() => { // Explicitly use React.useMemo
     if (!searchTerm) {
       return initialStudents;
     }

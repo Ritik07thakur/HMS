@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect, useMemo } from "react";
+
 
 const BILLING_RATE_PER_DAY = 80; // Rupees per present day
 
@@ -19,9 +19,9 @@ function BillingClientView({ initialBillingData, currentMonthName }: {
   currentMonthName: string;
 }) {
   "use client";
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = React.useState(""); // Explicitly use React.useState
   
-  const billingToDisplay = useMemo(() => {
+  const billingToDisplay = React.useMemo(() => { // Explicitly use React.useMemo
     if (!searchTerm) {
       return initialBillingData;
     }

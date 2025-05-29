@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect, useMemo } from "react";
+
 
 function getStatusVariant(status: DailyAttendanceStatus): "default" | "secondary" | "destructive" | "outline" {
   switch (status) {
@@ -34,11 +34,11 @@ function AttendanceClientView({ initialAttendanceData, currentMonthName, daysInM
   daysInMonth: number;
 }) {
   "use client";
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = React.useState(""); // Explicitly use React.useState
   
   const dayHeaders = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  const attendanceToDisplay = useMemo(() => {
+  const attendanceToDisplay = React.useMemo(() => { // Explicitly use React.useMemo
     if (!searchTerm) {
       return initialAttendanceData;
     }
