@@ -34,6 +34,8 @@ export default async function AdminAllStudentsPage() {
                   <TableRow>
                     <TableHead>Full Name</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead className="min-w-[130px]">Parent's Phone</TableHead>
+                    <TableHead className="min-w-[200px]">Address</TableHead>
                     <TableHead className="min-w-[150px]">Registered On</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -42,6 +44,8 @@ export default async function AdminAllStudentsPage() {
                     <TableRow key={student._id}>
                       <TableCell className="font-medium">{student.fullName}</TableCell>
                       <TableCell>{student.email}</TableCell>
+                      <TableCell>{student.parentPhone || 'N/A'}</TableCell>
+                      <TableCell className="whitespace-pre-line">{student.address || 'N/A'}</TableCell>
                       <TableCell>
                         {student.createdAt ? format(new Date(student.createdAt), "PPP, p") : 'N/A'}
                       </TableCell>

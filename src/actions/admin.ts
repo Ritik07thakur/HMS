@@ -9,6 +9,8 @@ export interface StudentBasicInfo {
   _id: string;
   fullName: string;
   email: string; 
+  parentPhone?: string; // Added parentPhone
+  address?: string; // Added address
   createdAt?: Date; // Added createdAt
 }
 
@@ -29,7 +31,7 @@ export async function getAllStudentsForDashboard(limit?: number): Promise<Studen
     await dbConnect();
     // Fetch necessary fields, and limit the results if a limit is provided
     const query = User.find({})
-      .select('_id fullName email createdAt') // Added createdAt
+      .select('_id fullName email createdAt parentPhone address') // Added parentPhone and address
       .sort({ createdAt: -1 });
 
     if (limit && limit > 0) {
@@ -42,6 +44,8 @@ export async function getAllStudentsForDashboard(limit?: number): Promise<Studen
       _id: student._id.toString(),
       fullName: student.fullName || 'N/A', // Handle cases where fullName might be missing
       email: student.email || 'N/A',   // Handle cases where email might be missing
+      parentPhone: student.parentPhone || 'N/A', // Handle cases where parentPhone might be missing
+      address: student.address || 'N/A', // Handle cases where address might be missing
       createdAt: student.createdAt, // Pass createdAt
     }));
   } catch (error) {
