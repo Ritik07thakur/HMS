@@ -118,3 +118,28 @@ attendanceSchema.index({ studentId: 1, date: 1 }, { unique: true });
 
 export const Attendance = mongoose.models.Attendance || mongoose.model<IAttendance>('Attendance', attendanceSchema);
 
+// Define Complaint Schema
+export type ComplaintCategory = "Maintenance" | "Mess" | "Noise" | "Security" | "Harassment" | "Other";
+export type ComplaintStatus = "Pending" | "In Progress" | "Resolved";
+
+export interface IComplaint extends mongoose.Document {
+  studentId: Types.ObjectId;
+  category: ComplaintCategory;
+  description: string;
+  status: ComplaintStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const complaintSchema = new mongoose.Schema<IComplaint>({
+  studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  category: { 
+    type: String, 
+    enum: ["Maintenance", "Mess", "Noise", "Security", "Harassment", "Other"], 
+    required: [true, "Complaint category is required"] 
+  },
+  description: { type: String, required: [true, "Complaint description is required"], minlength: 10, maxlength: 1000 },
+  status: { type: String, enum: ["Pending", "In Progress", "Resolved"], default: "Pending" },
+}, { timestamps: true });
+
+export const Complaint = mongoose.models.Complaint || mongoose.model<IComplaint>('Complaint', complaintSchema);

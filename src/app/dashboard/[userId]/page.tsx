@@ -6,8 +6,9 @@ import { Progress } from "@/components/ui/progress";
 import { getUserDetails, getSingleStudentMonthlyAttendance } from "@/actions/user";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
-import { Wifi, Utensils, BookOpen, ShieldCheck, Dumbbell, Tv2, WashingMachine, UserSquare2, CalendarCheck2, Receipt } from "lucide-react";
-// Removed unused icons: Mail, Phone, UsersRound, Fingerprint, MapPin, CalendarDays
+import { Wifi, Utensils, BookOpen, ShieldCheck, Dumbbell, Tv2, WashingMachine, UserSquare2, CalendarCheck2, Receipt, MessageSquareWarning } from "lucide-react";
+import { ComplaintForm } from "@/components/dashboard/ComplaintForm";
+
 
 // Facility Items (copied from home page for now)
 const facilities = [
@@ -217,6 +218,24 @@ export default async function UserDashboardPage({ params }: UserDashboardPagePro
             </CardContent>
           </Card>
         </div>
+
+        {/* Complaint Section */}
+        <section id="complaints" className="py-12 mt-8">
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquareWarning className="h-6 w-6 text-primary" />
+                  Lodge a Complaint
+                </CardTitle>
+                <CardDescription>
+                  Have an issue? Let us know by filling out the form below.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ComplaintForm studentId={params.userId} />
+              </CardContent>
+            </Card>
+        </section>
 
         {/* Facilities Section */}
         <section id="facilities" className="py-12 mt-8">
