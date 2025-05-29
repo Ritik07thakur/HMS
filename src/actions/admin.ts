@@ -1,13 +1,13 @@
 
 'use server';
 
-import dbConnect, { User, Attendance, type IAttendance } from '@/lib/mongodb'; // AttendanceStatus will be 'Present' | 'Absent'
-import type { IUser } from '@/lib/mongodb'; // Ensure IUser is imported
+import dbConnect, { User, Attendance, type IAttendance, Complaint, type IComplaint, type ComplaintStatus, type ComplaintCategory } from '@/lib/mongodb'; 
+import type { IUser } from '@/lib/mongodb'; 
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, isValid, parseISO } from 'date-fns';
-import type { AttendanceStatus } from '@/lib/mongodb'; // Import the updated type
+import type { AttendanceStatus } from '@/lib/mongodb'; 
 
 export interface StudentBasicInfo {
-  _id: string; // Ensuring _id is string
+  _id: string; 
   fullName: string;
   email: string; 
   parentPhone?: string;
@@ -40,7 +40,7 @@ export async function getAllStudentsForDashboard(limit?: number): Promise<Studen
     const students = await query.lean();
 
     return students.map(student => ({
-      _id: student._id.toString(), // Convert ObjectId to string
+      _id: student._id.toString(), 
       fullName: student.fullName || 'N/A',
       email: student.email || 'N/A',
       parentPhone: student.parentPhone || 'N/A',
@@ -53,12 +53,12 @@ export async function getAllStudentsForDashboard(limit?: number): Promise<Studen
   }
 }
 
-export type DailyAttendanceStatus = 'P' | 'A' | '-'; // '-' for no record. 'L' removed.
+export type DailyAttendanceStatus = 'P' | 'A' | '-'; 
 
 export interface StudentMonthlyAttendance {
   studentId: string;
   fullName: string;
-  dailyStatuses: DailyAttendanceStatus[]; // Array of statuses for each day of the month
+  dailyStatuses: DailyAttendanceStatus[]; 
   presentDays: number;
   totalDaysInMonth: number;
 }
@@ -95,7 +95,7 @@ export async function getStudentAttendanceForCurrentMonth(): Promise<StudentMont
         },
       }).lean();
 
-      const attendanceMap = new Map<string, AttendanceStatus>(); // AttendanceStatus is now 'Present' | 'Absent'
+      const attendanceMap = new Map<string, AttendanceStatus>(); 
       attendanceRecords.forEach(record => {
         const recordDate = record.date instanceof Date ? record.date : parseISO(record.date as unknown as string);
         if (isValid(recordDate)) {
@@ -113,8 +113,7 @@ export async function getStudentAttendanceForCurrentMonth(): Promise<StudentMont
         } else if (status === 'Absent') {
           return 'A';
         }
-        // 'Leave' status is no longer possible from the DB based on current model
-        return '-'; // No record for this day
+        return '-'; 
       });
 
       return {
@@ -130,6 +129,54 @@ export async function getStudentAttendanceForCurrentMonth(): Promise<StudentMont
 
   } catch (error) {
     console.error('Error fetching student monthly attendance:', error);
+    return [];
+  }
+}
+
+export interface PopulatedComplaint {
+  _id: string;
+  student: {
+    _id: string;
+    fullName: string;
+    email: string;
+  } | null; // studentId might not successfully populate if user is deleted
+  category: ComplaintCategory;
+  description: string;
+  status: ComplaintStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export async function getAllComplaints(): Promise<PopulatedComplaint[]> {
+  try {
+    await dbConnect();
+    const complaints = await Complaint.find({})
+      .populate<{ studentId: Pick<IUser, '_id' | 'fullName' | 'email'> }>({
+        path: 'studentId',
+        select: 'fullName email _id', // Select specific fields from User
+        model: User // Explicitly provide the User model for population
+      })
+      .sort({ createdAt: -1 }) // Sort by newest first
+      .lean(); // Use .lean() for plain JavaScript objects
+
+    return complaints.map(complaint => {
+      const populatedStudent = complaint.studentId;
+      return {
+        _id: complaint._id.toString(),
+        student: populatedStudent ? {
+          _id: populatedStudent._id!.toString(), // Ensure _id exists and convert to string
+          fullName: populatedStudent.fullName || 'N/A',
+          email: populatedStudent.email || 'N/A',
+        } : null,
+        category: complaint.category,
+        description: complaint.description,
+        status: complaint.status,
+        createdAt: complaint.createdAt,
+        updatedAt: complaint.updatedAt,
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching all complaints:', error);
     return [];
   }
 }

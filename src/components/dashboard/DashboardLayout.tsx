@@ -26,13 +26,14 @@ import {
   LayoutDashboard,
   BedDouble,
   ListChecks,
-  ListPlus, // Added ListPlus import
+  ListPlus,
   Users,
   CalendarCheck,
   CreditCard,
   CircleUser,
+  MessageSquareWarning, // Added MessageSquareWarning
   type LucideProps,
-  type LucideIcon as LucideIconType // Renaming to avoid conflict if needed, clarifies it's a type
+  type LucideIcon as LucideIconType
 } from 'lucide-react';
 
 // Define a map for icon names to components
@@ -40,11 +41,12 @@ const IconMap = {
   LayoutDashboard,
   BedDouble,
   ListChecks,
-  ListPlus, // Added ListPlus to IconMap
+  ListPlus,
   Users,
   CalendarCheck,
   CreditCard,
   CircleUser,
+  MessageSquareWarning, // Added MessageSquareWarning to IconMap
 } as const; // Use 'as const' for precise key typing
 
 // Update NavItem interface to use iconName
