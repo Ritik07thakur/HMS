@@ -26,6 +26,7 @@ import {
   LayoutDashboard,
   BedDouble,
   ListChecks,
+  ListPlus, // Added ListPlus import
   Users,
   CalendarCheck,
   CreditCard,
@@ -39,6 +40,7 @@ const IconMap = {
   LayoutDashboard,
   BedDouble,
   ListChecks,
+  ListPlus, // Added ListPlus to IconMap
   Users,
   CalendarCheck,
   CreditCard,
@@ -100,7 +102,7 @@ export default function DashboardLayout({ children, navItems, userRole }: Dashbo
         </SidebarContent>
         <SidebarFooter className="p-4 border-t">
            <p className="text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
-            © {new Date().getFullYear()} DormNexus
+            © {new Date().getFullYear()} Hostel Management System
           </p>
         </SidebarFooter>
       </Sidebar>
@@ -119,3 +121,4 @@ export default function DashboardLayout({ children, navItems, userRole }: Dashbo
     </SidebarProvider>
   );
 }
+
