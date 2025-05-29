@@ -19,10 +19,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock } from "lucide-react";
+import { loginUser } from "@/actions/auth"; // Import the server action
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  password: z.string().min(1, { message: "Password is required." }), // Min 1, as actual length check is on server/schema
 });
 
 export function LoginForm() {
@@ -37,16 +38,22 @@ export function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Mock authentication
-    toast({
-      title: "Login Successful",
-      description: "Redirecting to your dashboard...",
-    });
-    if (values.email.includes("admin")) {
-      router.push("/admin/dashboard");
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const result = await loginUser(values);
+
+    if (result.success && result.data?.userId) {
+      toast({
+        title: "Login Successful",
+        description: result.message || "Redirecting to your dashboard...",
+      });
+      // Redirect to a dynamic user-specific dashboard path
+      router.push(`/dashboard/${result.data.userId}`); 
     } else {
-      router.push("/student/dashboard");
+      toast({
+        title: "Login Failed",
+        description: result.message || "Invalid email or password. Please try again.",
+        variant: "destructive",
+      });
     }
   }
 
@@ -98,4 +105,3 @@ export function LoginForm() {
     </Form>
   );
 }
-
