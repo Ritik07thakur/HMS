@@ -2,12 +2,12 @@
 import { AppLogo } from "@/components/layout/AppLogo";
 import { UserNav } from "@/components/layout/UserNav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { getUserDetails } from "@/actions/user";
+import { Progress } from "@/components/ui/progress";
+import { getUserDetails, getSingleStudentMonthlyAttendance } from "@/actions/user";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
-import { Wifi, Utensils, BookOpen, ShieldCheck, Dumbbell, Tv2, WashingMachine, CalendarDays, Mail, Phone, UsersRound, Fingerprint, MapPin, UserSquare2 } from "lucide-react";
-import type { IUser } from "@/lib/mongodb";
+import { Wifi, Utensils, BookOpen, ShieldCheck, Dumbbell, Tv2, WashingMachine, UserSquare2, CalendarCheck2, Receipt } from "lucide-react";
+// Removed unused icons: Mail, Phone, UsersRound, Fingerprint, MapPin, CalendarDays
 
 // Facility Items (copied from home page for now)
 const facilities = [
@@ -26,6 +26,8 @@ const messTimings = [
   { meal: "Dinner", time: "7:00 PM – 8:00 PM", icon: Utensils },
 ];
 
+const BILLING_RATE_PER_DAY = 80;
+
 interface UserDashboardPageProps {
   params: {
     userId: string;
@@ -34,12 +36,12 @@ interface UserDashboardPageProps {
 
 export default async function UserDashboardPage({ params }: UserDashboardPageProps) {
   const user = await getUserDetails(params.userId);
+  const attendanceData = await getSingleStudentMonthlyAttendance(params.userId);
 
   if (!user) {
     notFound();
   }
   
-  // Safely access user properties with fallbacks, though getUserDetails should ensure they exist
   const studentDetails = {
     fullName: user.fullName || "N/A",
     email: user.email || "N/A",
@@ -47,9 +49,23 @@ export default async function UserDashboardPage({ params }: UserDashboardPagePro
     parentPhone: user.parentPhone || "N/A",
     aadhaar: user.aadhaar || "N/A",
     gender: user.gender || "N/A",
-    dob: user.dob ? format(new Date(user.dob), "PPP") : "N/A", // Parse ISO string back to Date for formatting
+    dob: user.dob ? format(new Date(user.dob), "PPP") : "N/A",
     address: user.address || "N/A",
   };
+
+  let attendancePercentage = 0;
+  let presentDays = 0;
+  let totalDaysInMonth = 0;
+  let billAmount = 0;
+
+  if (attendanceData) {
+    presentDays = attendanceData.presentDays;
+    totalDaysInMonth = attendanceData.totalDaysInMonth;
+    if (totalDaysInMonth > 0) {
+      attendancePercentage = (presentDays / totalDaysInMonth) * 100;
+    }
+    billAmount = presentDays * BILLING_RATE_PER_DAY;
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -139,6 +155,67 @@ export default async function UserDashboardPage({ params }: UserDashboardPagePro
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Attendance and Bill Section */}
+        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8 lg:mt-8">
+          {/* Attendance Card */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CalendarCheck2 className="h-6 w-6 text-primary" />
+                My Attendance (Current Month)
+              </CardTitle>
+              <CardDescription>Your attendance summary for {format(new Date(), "MMMM yyyy")}.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {attendanceData ? (
+                <div className="space-y-3">
+                  <Progress value={attendancePercentage} aria-label={`${attendancePercentage.toFixed(1)}% attendance`} className="h-3" />
+                  <p className="text-center text-lg font-semibold text-foreground">
+                    {attendancePercentage.toFixed(1)}%
+                  </p>
+                  <p className="text-center text-sm text-muted-foreground">
+                    {presentDays} / {totalDaysInMonth} days present
+                  </p>
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-center py-4">Attendance data not available for this month.</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Bill Card */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Receipt className="h-6 w-6 text-primary" />
+                My Bill (Current Month)
+              </CardTitle>
+              <CardDescription>Calculated bill for {format(new Date(), "MMMM yyyy")}.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {attendanceData ? (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Total Present Days:</span>
+                    <span className="font-semibold text-foreground">{presentDays}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Rate per Day:</span>
+                    <span className="font-semibold text-foreground">₹{BILLING_RATE_PER_DAY.toFixed(2)}</span>
+                  </div>
+                  <hr className="border-border my-2" />
+                  <div className="flex justify-between text-base font-semibold">
+                    <span className="text-foreground">Calculated Bill:</span>
+                    <span className="text-primary">₹{billAmount.toFixed(2)}</span>
+                  </div>
+                </>
+              ) : (
+                <p className="text-muted-foreground text-center py-4">Billing information cannot be calculated.</p>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Facilities Section */}
