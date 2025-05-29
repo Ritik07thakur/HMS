@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,11 +16,16 @@ import { LogOut, UserCircle, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export function UserNav() {
+interface UserNavProps {
+  userName?: string;
+  userEmail?: string;
+}
+
+export function UserNav({ userName = "User Name", userEmail = "user@example.com" }: UserNavProps) {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Mock logout
+    // Mock logout, in a real app, you'd clear tokens/session
     router.push("/login");
   };
 
@@ -29,16 +35,16 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10 border-2 border-primary/50">
             <AvatarImage src="https://placehold.co/100x100.png" alt="User Avatar" data-ai-hint="user avatar" />
-            <AvatarFallback>U</AvatarFallback>
+            <AvatarFallback>{userName?.charAt(0)?.toUpperCase() || 'U'}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none text-foreground">User Name</p>
+            <p className="text-sm font-medium leading-none text-foreground">{userName}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              user@example.com
+              {userEmail}
             </p>
           </div>
         </DropdownMenuLabel>
