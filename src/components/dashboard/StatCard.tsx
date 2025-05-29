@@ -25,3 +25,4 @@ export function StatCard({ title, value, description, IconComponent, iconBgColor
     </Card>
   );
 }
+

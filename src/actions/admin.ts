@@ -43,3 +43,4 @@ export async function getAllStudentsForDashboard(limit: number = 10): Promise<St
     return []; // Return empty array in case of an error
   }
 }
+
