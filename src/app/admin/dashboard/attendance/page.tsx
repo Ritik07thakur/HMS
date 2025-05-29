@@ -2,7 +2,7 @@
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress"; // Import Progress
+import { Progress } from "@/components/ui/progress";
 import { ListChecks } from "lucide-react";
 import { getStudentAttendanceForCurrentMonth, type StudentMonthlyAttendance, type DailyAttendanceStatus } from "@/actions/admin";
 import { format } from 'date-fns';
@@ -11,7 +11,7 @@ function getStatusVariant(status: DailyAttendanceStatus): "default" | "secondary
   switch (status) {
     case 'P': return "default"; // Present
     case 'A': return "destructive"; // Absent
-    case 'L': return "secondary"; // Leave
+    // 'L' (Leave) case removed
     case '-': return "outline"; // No record / Holiday
     default: return "outline";
   }
@@ -21,7 +21,7 @@ function getStatusTooltip(status: DailyAttendanceStatus): string {
     switch (status) {
       case 'P': return "Present";
       case 'A': return "Absent";
-      case 'L': return "Leave";
+      // 'L' (Leave) case removed
       case '-': return "No Record / Holiday";
       default: return "Status Unknown";
     }
@@ -50,9 +50,10 @@ export default async function AdminAttendancePage() {
           <CardDescription>
             Daily attendance status for all students for {currentMonthName}.
             <br />
-            <small className="text-xs text-muted-foreground">P: Present, A: Absent, L: Leave, -: No Record/Holiday</small>
+            <small className="text-xs text-muted-foreground">P: Present, A: Absent, -: No Record/Holiday</small> 
+            {/* 'L: Leave' removed from legend */}
              <br />
-            <small className="text-xs text-muted-foreground">Note: You need a system to record daily attendance for this data to be populated.</small>
+            <small className="text-xs text-muted-foreground">Note: Use the 'Mark Attendance' section to record daily attendance.</small>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -111,4 +112,3 @@ export default async function AdminAttendancePage() {
     </div>
   );
 }
-

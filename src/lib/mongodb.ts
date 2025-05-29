@@ -97,7 +97,7 @@ const userSchema = new mongoose.Schema<IUser>({
 export const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 
 // Define Attendance Schema
-export type AttendanceStatus = 'Present' | 'Absent' | 'Leave';
+export type AttendanceStatus = 'Present' | 'Absent'; // Updated: Removed 'Leave'
 
 export interface IAttendance extends mongoose.Document {
   studentId: Types.ObjectId;
@@ -110,7 +110,7 @@ export interface IAttendance extends mongoose.Document {
 const attendanceSchema = new mongoose.Schema<IAttendance>({
   studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   date: { type: Date, required: true },
-  status: { type: String, enum: ['Present', 'Absent', 'Leave'], required: true },
+  status: { type: String, enum: ['Present', 'Absent'], required: true }, // Updated: Removed 'Leave'
 }, { timestamps: true });
 
 // Add compound index to prevent duplicate entries for the same student on the same day

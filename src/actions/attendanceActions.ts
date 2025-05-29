@@ -12,7 +12,7 @@ export interface StudentForAttendanceMarking {
 
 export interface AttendanceRecord {
   studentId: string;
-  status: AttendanceStatus;
+  status: AttendanceStatus; // This type is now 'Present' | 'Absent'
 }
 
 /**
@@ -51,7 +51,7 @@ export async function getAttendanceRecordsForDate(date: Date): Promise<Attendanc
     
     return records.map(record => ({
       studentId: record.studentId.toString(),
-      status: record.status,
+      status: record.status, // status will be 'Present' or 'Absent'
     }));
   } catch (error) {
     console.error('Error fetching attendance records for date:', error);
@@ -61,7 +61,7 @@ export async function getAttendanceRecordsForDate(date: Date): Promise<Attendanc
 
 export interface DailyAttendancePayload {
   date: Date; // Date object from client
-  records: Array<{ studentId: string; status: AttendanceStatus }>;
+  records: Array<{ studentId: string; status: AttendanceStatus }>; // status is 'Present' | 'Absent'
 }
 
 /**

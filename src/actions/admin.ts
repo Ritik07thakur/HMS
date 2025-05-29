@@ -1,9 +1,10 @@
 
 'use server';
 
-import dbConnect, { User, Attendance, type IAttendance, type AttendanceStatus } from '@/lib/mongodb';
+import dbConnect, { User, Attendance, type IAttendance } from '@/lib/mongodb'; // AttendanceStatus will be 'Present' | 'Absent'
 import type { IUser } from '@/lib/mongodb'; // Ensure IUser is imported
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, isValid, parseISO } from 'date-fns';
+import type { AttendanceStatus } from '@/lib/mongodb'; // Import the updated type
 
 export interface StudentBasicInfo {
   _id: string; // Ensuring _id is string
@@ -52,7 +53,7 @@ export async function getAllStudentsForDashboard(limit?: number): Promise<Studen
   }
 }
 
-export type DailyAttendanceStatus = 'P' | 'A' | 'L' | '-'; // '-' for no record
+export type DailyAttendanceStatus = 'P' | 'A' | '-'; // '-' for no record. 'L' removed.
 
 export interface StudentMonthlyAttendance {
   studentId: string;
@@ -76,7 +77,6 @@ export async function getStudentAttendanceForCurrentMonth(): Promise<StudentMont
     
     const studentAttendancePromises = students.map(async (student) => {
       if (!student._id) {
-        // This case should ideally not happen if data is clean
         return {
           studentId: 'UnknownID',
           fullName: student.fullName || 'Unknown Student',
@@ -87,7 +87,6 @@ export async function getStudentAttendanceForCurrentMonth(): Promise<StudentMont
       }
       const studentIdStr = student._id.toString();
 
-      // Fetch all attendance records for this student for the current month
       const attendanceRecords: IAttendance[] = await Attendance.find({
         studentId: student._id,
         date: {
@@ -96,10 +95,8 @@ export async function getStudentAttendanceForCurrentMonth(): Promise<StudentMont
         },
       }).lean();
 
-      // Create a map for quick lookup: dateString -> status
-      const attendanceMap = new Map<string, AttendanceStatus>();
+      const attendanceMap = new Map<string, AttendanceStatus>(); // AttendanceStatus is now 'Present' | 'Absent'
       attendanceRecords.forEach(record => {
-        // Ensure date is valid before formatting. Handle potential string dates from DB if not properly typed.
         const recordDate = record.date instanceof Date ? record.date : parseISO(record.date as unknown as string);
         if (isValid(recordDate)) {
             attendanceMap.set(format(recordDate, 'yyyy-MM-dd'), record.status);
@@ -115,9 +112,8 @@ export async function getStudentAttendanceForCurrentMonth(): Promise<StudentMont
           return 'P';
         } else if (status === 'Absent') {
           return 'A';
-        } else if (status === 'Leave') {
-          return 'L';
         }
+        // 'Leave' status is no longer possible from the DB based on current model
         return '-'; // No record for this day
       });
 

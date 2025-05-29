@@ -18,8 +18,8 @@ import {
   getAttendanceRecordsForDate, 
   saveOrUpdateDailyAttendance,
   type StudentForAttendanceMarking,
-  type AttendanceStatus
 } from "@/actions/attendanceActions"; 
+import type { AttendanceStatus } from "@/lib/mongodb"; // Import updated AttendanceStatus
 
 export default function MarkAttendancePage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(startOfDay(new Date()));
@@ -38,7 +38,6 @@ export default function MarkAttendancePage() {
       try {
         const studentList = await getStudentsForAttendanceMarking();
         setStudents(studentList);
-        // Initialize attendance data with a default status, e.g., 'Present' or a specific default
         const initialAttendance: Record<string, AttendanceStatus> = {};
         studentList.forEach(student => {
           initialAttendance[student._id] = 'Present'; // Default to 'Present'
@@ -61,13 +60,17 @@ export default function MarkAttendancePage() {
       try {
         const records = await getAttendanceRecordsForDate(selectedDate);
         const newAttendanceData: Record<string, AttendanceStatus> = {};
-        // Initialize with default for all students
         students.forEach(student => {
           newAttendanceData[student._id] = 'Present'; // Default
         });
-        // Override with fetched records
         records.forEach(record => {
-          newAttendanceData[record.studentId] = record.status;
+          // Ensure status is one of the valid 'Present' | 'Absent'
+          if (record.status === 'Present' || record.status === 'Absent') {
+            newAttendanceData[record.studentId] = record.status;
+          } else {
+             // If somehow an invalid status is fetched (e.g. old 'Leave' data), default to 'Present'
+            newAttendanceData[record.studentId] = 'Present';
+          }
         });
         setAttendanceData(newAttendanceData);
       } catch (error) {
@@ -79,8 +82,11 @@ export default function MarkAttendancePage() {
     fetchAttendanceForSelectedDate();
   }, [selectedDate, students, toast]);
 
-  const handleStatusChange = (studentId: string, status: AttendanceStatus) => {
-    setAttendanceData(prev => ({ ...prev, [studentId]: status }));
+  const handleStatusChange = (studentId: string, status: string) => {
+    // Ensure status is 'Present' or 'Absent' before setting
+    if (status === 'Present' || status === 'Absent') {
+        setAttendanceData(prev => ({ ...prev, [studentId]: status as AttendanceStatus }));
+    }
   };
 
   const handleSubmit = async (event: FormEvent) => {
@@ -173,7 +179,7 @@ export default function MarkAttendancePage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="min-w-[150px]">Student Name</TableHead>
-                      <TableHead className="text-center w-[300px]">Status (P / A / L)</TableHead>
+                      <TableHead className="text-center w-[250px]">Status (P / A)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -202,10 +208,7 @@ export default function MarkAttendancePage() {
                                 <RadioGroupItem value="Absent" id={`${student._id}-absent`} />
                                 <Label htmlFor={`${student._id}-absent`} className="text-xs sm:text-sm cursor-pointer">Absent</Label>
                                 </div>
-                                <div className="flex items-center space-x-1">
-                                <RadioGroupItem value="Leave" id={`${student._id}-leave`} />
-                                <Label htmlFor={`${student._id}-leave`} className="text-xs sm:text-sm cursor-pointer">Leave</Label>
-                                </div>
+                                {/* 'Leave' option removed */}
                             </RadioGroup>
                             </TableCell>
                         </TableRow>
