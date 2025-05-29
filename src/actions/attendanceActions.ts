@@ -101,9 +101,10 @@ export async function saveOrUpdateDailyAttendance(payload: DailyAttendancePayloa
   } catch (error: any) {
     console.error('Error saving daily attendance:', error);
     // Check for specific MongoDB errors if needed, e.g., validation errors
-    if (error.name === 'MongoBulkWriteError' && error.code === 11000) {
+    if (error.name === 'MongoBulkWriteError' && error.code === 11000) { // Mongoose 6+ error structure might differ slightly
          return { success: false, message: "A duplicate key error occurred. This might happen with concurrent requests." };
     }
     return { success: false, message: error.message || "An unexpected error occurred while saving attendance." };
   }
 }
+

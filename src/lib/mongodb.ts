@@ -117,3 +117,4 @@ const attendanceSchema = new mongoose.Schema<IAttendance>({
 attendanceSchema.index({ studentId: 1, date: 1 }, { unique: true });
 
 export const Attendance = mongoose.models.Attendance || mongoose.model<IAttendance>('Attendance', attendanceSchema);
+
