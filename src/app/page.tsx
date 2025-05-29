@@ -1,8 +1,12 @@
+
+"use client"; // For useEffect and useState for footer year
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AppLogo } from "@/components/layout/AppLogo";
 import { LogIn, UserPlus, Wifi, Utensils, BookOpen, ShieldCheck, Dumbbell, Tv2, WashingMachine, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"; // For mobile menu
+import { useEffect, useState } from "react";
 
 // Header Nav Links
 const navLinks = [
@@ -30,6 +34,12 @@ const messTimings = [
 ];
 
 export default function HomePage() {
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
@@ -168,7 +178,8 @@ export default function HomePage() {
       <footer id="contact" className="py-10 border-t bg-muted/20">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
           <p className="mb-2">For any queries, please contact hostel administration at <a href="mailto:contact@hostelms.example.com" className="text-primary hover:underline">contact@hostelms.example.com</a>.</p>
-          <p>© {new Date().getFullYear()} Hostel Management System. All rights reserved.</p>
+          {currentYear && <p>© {currentYear} Hostel Management System. All rights reserved.</p>}
+          {!currentYear && <p>© Hostel Management System. All rights reserved.</p>}
         </div>
       </footer>
     </div>

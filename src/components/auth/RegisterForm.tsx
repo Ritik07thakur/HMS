@@ -104,7 +104,7 @@ export function RegisterForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" suppressHydrationWarning>
         <FormField
           control={form.control}
           name="fullName"
@@ -114,7 +114,7 @@ export function RegisterForm() {
               <div className="relative">
                 <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} className="pl-10" />
+                  <Input type="text" placeholder="John Doe" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
@@ -130,7 +130,7 @@ export function RegisterForm() {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input placeholder="m@example.com" {...field} className="pl-10" />
+                  <Input type="email" placeholder="m@example.com" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
@@ -146,7 +146,7 @@ export function RegisterForm() {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} className="pl-10" />
+                  <Input type="password" placeholder="••••••••" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
@@ -162,7 +162,7 @@ export function RegisterForm() {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} className="pl-10" />
+                  <Input type="password" placeholder="••••••••" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
@@ -178,7 +178,7 @@ export function RegisterForm() {
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input type="tel" placeholder="9876543210" {...field} className="pl-10" />
+                  <Input type="tel" placeholder="9876543210" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
@@ -194,7 +194,7 @@ export function RegisterForm() {
               <div className="relative">
                 <Smartphone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input type="tel" placeholder="9876543210" {...field} className="pl-10" />
+                  <Input type="tel" placeholder="9876543210" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
@@ -211,7 +211,7 @@ export function RegisterForm() {
                  <UsersRound className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="pl-10">
+                    <SelectTrigger className="pl-10" suppressHydrationWarning>
                       <SelectValue placeholder="Select your gender" />
                     </SelectTrigger>
                   </FormControl>
@@ -241,6 +241,7 @@ export function RegisterForm() {
                         "w-full pl-10 text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
+                      suppressHydrationWarning
                     >
                       <CalendarDays className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                       {field.value ? (
@@ -280,6 +281,7 @@ export function RegisterForm() {
                     placeholder="123 Main St, Anytown, USA"
                     className="pl-10 resize-none"
                     {...field}
+                    suppressHydrationWarning
                   />
                 </FormControl>
               </div>
@@ -296,14 +298,14 @@ export function RegisterForm() {
               <div className="relative">
                 <Fingerprint className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <FormControl>
-                  <Input type="number" placeholder="123456789012" {...field} className="pl-10" />
+                  <Input type="number" placeholder="123456789012" {...field} className="pl-10" suppressHydrationWarning />
                 </FormControl>
               </div>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full !mt-6">
+        <Button type="submit" className="w-full !mt-6" suppressHydrationWarning>
           Register
         </Button>
         <p className="text-center text-sm text-muted-foreground">
@@ -316,5 +318,3 @@ export function RegisterForm() {
     </Form>
   );
 }
-
-    
