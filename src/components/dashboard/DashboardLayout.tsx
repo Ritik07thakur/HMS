@@ -1,3 +1,4 @@
+
 "use client"; 
 // Top level layout for dashboards needs to be client for SidebarProvider context
 
@@ -20,13 +21,35 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import type { LucideIcon } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  LayoutDashboard,
+  BedDouble,
+  ListChecks,
+  Users,
+  CalendarCheck,
+  CreditCard,
+  CircleUser,
+  type LucideProps,
+  type LucideIcon as LucideIconType // Renaming to avoid conflict if needed, clarifies it's a type
+} from 'lucide-react';
 
+// Define a map for icon names to components
+const IconMap = {
+  LayoutDashboard,
+  BedDouble,
+  ListChecks,
+  Users,
+  CalendarCheck,
+  CreditCard,
+  CircleUser,
+} as const; // Use 'as const' for precise key typing
+
+// Update NavItem interface to use iconName
 export interface NavItem {
   href: string;
   label: string;
-  icon: LucideIcon;
+  iconName: keyof typeof IconMap; // Use names from IconMap
   matchExact?: boolean;
 }
 
@@ -36,26 +59,29 @@ interface DashboardLayoutProps {
   userRole: 'Admin' | 'Student';
 }
 
-function SidebarNavigation({ navItems, userRole }: { navItems: NavItem[], userRole: string }) {
+function SidebarNavigation({ navItems }: { navItems: NavItem[]; userRole: string }) {
   const pathname = usePathname();
   const { open } = useSidebar();
 
   return (
     <SidebarMenu>
-      {navItems.map((item) => (
-        <SidebarMenuItem key={item.href}>
-          <SidebarMenuButton
-            asChild
-            isActive={item.matchExact ? pathname === item.href : pathname.startsWith(item.href)}
-            tooltip={open ? undefined : item.label}
-          >
-            <Link href={item.href}>
-              <item.icon />
-              <span>{item.label}</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      ))}
+      {navItems.map((item) => {
+        const IconComponent = IconMap[item.iconName];
+        return (
+          <SidebarMenuItem key={item.href}>
+            <SidebarMenuButton
+              asChild
+              isActive={item.matchExact ? pathname === item.href : pathname.startsWith(item.href)}
+              tooltip={open ? undefined : item.label}
+            >
+              <Link href={item.href}>
+                {IconComponent && <IconComponent />} {/* Render icon from map */}
+                <span>{item.label}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        );
+      })}
     </SidebarMenu>
   );
 }
