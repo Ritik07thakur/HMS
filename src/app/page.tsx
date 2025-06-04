@@ -7,6 +7,7 @@ import { AppLogo } from "@/components/layout/AppLogo";
 import { LogIn, UserPlus, Wifi, Utensils, BookOpen, ShieldCheck, Dumbbell, Tv2, WashingMachine, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"; // For mobile menu
 import { useEffect, useState } from "react";
+import { StaticChatbot } from "@/components/chatbot/StaticChatbot"; // Import the chatbot
 
 // Header Nav Links
 const navLinks = [
@@ -163,9 +164,9 @@ export default function HomePage() {
         <section id="about" className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-foreground">About Hostel Management System</h2>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground">About DormNexus</h2>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                Our Hostel Management System is designed to simplify the complexities of hostel administration and enhance the living experience for students. 
+                Our Hostel Management System, DormNexus, is designed to simplify the complexities of hostel administration and enhance the living experience for students. 
                 We provide a centralized platform for managing registrations, room allocations, fee payments, attendance, mess schedules, and much more. 
                 Our goal is to create an efficient, transparent, and user-friendly environment for students, wardens, and administrators alike.
               </p>
@@ -177,11 +178,14 @@ export default function HomePage() {
       {/* Footer */}
       <footer id="contact" className="py-10 border-t bg-muted/20">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p className="mb-2">For any queries, please contact hostel administration at <a href="mailto:contact@hostelms.example.com" className="text-primary hover:underline">contact@hostelms.example.com</a>.</p>
-          {currentYear && <p>© {currentYear} Hostel Management System. All rights reserved.</p>}
-          {!currentYear && <p>© Hostel Management System. All rights reserved.</p>}
+          <p className="mb-2">For any queries, please contact hostel administration at <a href="mailto:contact@dormnexus.example.com" className="text-primary hover:underline">contact@dormnexus.example.com</a>.</p>
+          {currentYear && <p>© {currentYear} DormNexus. All rights reserved.</p>}
+          {!currentYear && <p>© DormNexus. All rights reserved.</p>}
         </div>
       </footer>
+      
+      <StaticChatbot /> {/* Add chatbot here */}
     </div>
   );
 }
+
