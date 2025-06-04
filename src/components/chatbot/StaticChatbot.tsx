@@ -24,11 +24,7 @@ interface QuestionOption {
 
 const allQuestions: Record<string, QuestionOption> = {
   // Initial Questions
-  q_what_is_dormnexus: {
-    id: 'q_what_is_dormnexus',
-    questionText: 'What is DormNexus?',
-    answerText: 'DormNexus is a comprehensive hostel management system designed to streamline operations for administrators and enhance the living experience for students. It covers registration, attendance, billing, complaints, and more.',
-  },
+  // Removed: q_what_is_dormnexus
   q_how_to_register: {
     id: 'q_how_to_register',
     questionText: 'How do I register?',
@@ -146,7 +142,7 @@ const allQuestions: Record<string, QuestionOption> = {
 };
 
 const initialQuestionIds = [
-  'q_what_is_dormnexus',
+  // Removed: 'q_what_is_dormnexus',
   'q_how_to_register',
   'q_how_to_login',
   'q_facilities',
